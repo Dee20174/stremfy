@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Happy Birthday Swethaaa 🌙🎂</title>
+<style>
+  :root{
+    --night1:#060818; --night2:#0a0f2c; --glow1:#ff4ecb; --glow2:#40e0d0; --glow3:#ffd166;
+    --text:#fff; --accent:#9d4edd;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--text); font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", sans-serif;
+    background: radial-gradient(1200px 600px at 50% -10%, #1b1e55 0%, var(--night1) 40%, #02040c 100%), 
+                radial-gradient(1000px 500px at 120% 10%, #1a1040 0%, transparent 50%),
+                radial-gradient(900px 500px at -20% 30%, #0c1a3a 0%, transparent 55%), var(--night2);
+    overflow:hidden;
+  }
+  /* floating stars */
+  .stars{position:fixed; inset:0; z-index:-1; pointer-events:none}
+  .stars span{
+    position:absolute; width:2px; height:2px; background:#fff; opacity:.8; border-radius:50%;
+    animation: twinkle linear infinite;
+  }
+  @keyframes twinkle{ 50%{ transform:translateY(20px) scale(1.3); opacity:.4 } }
+
+  section{
+    display:none; height:100vh; width:100vw;
+    padding:24px; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+    text-align:center;
+  }
+  .show{display:flex}
+
+  h1,h2,p{margin:0.2rem 0; text-shadow:0 0 14px rgba(255,255,255,.08), 0 0 22px rgba(255, 78, 203,.35);}
+
+  .big{font-size:clamp(28px, 5vw, 64px); font-weight:800; letter-spacing:1px}
+  .xl{font-size:clamp(40px, 7vw, 88px); font-weight:900; letter-spacing:2px}
+
+  .btn{
+    background: linear-gradient(45deg, var(--glow1), var(--glow3), var(--glow2));
+    color:#091018; border:0; padding:14px 28px; border-radius:999px; font-weight:700; font-size:18px;
+    cursor:pointer; box-shadow:0 0 18px rgba(255,78,203,.45), inset 0 0 10px rgba(255,255,255,.4);
+    transition: transform .15s ease, filter .15s ease;
+  }
+  .btn:hover{ transform: translateY(-2px); filter:brightness(1.05) }
+  .btn:active{ transform: translateY(1px) }
+
+  /* countdown number */
+  #countNum{font-size: clamp(72px, 14vw, 160px); font-weight:900; line-height:1; letter-spacing:4px}
+
+  /* fireworks canvas / confetti */
+  canvas.fx{position:fixed; inset:0; pointer-events:none; z-index:5}
+
+  /* music player inline */
+  .player{display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center}
+
+  /* CAKE */
+  .stage{position:relative; width:min(520px, 92vw); height:min(420px, 70vh)}
+  .cake{
+    position:absolute; left:50%; bottom:40px; transform:translateX(-50%);
+    width: min(380px, 85vw); height:220px;
+  }
+  .plate{position:absolute; left:50%; transform:translateX(-50%); bottom:0; width:120%; height:22px; background:linear-gradient(#e0e3ff,#aab1ff); border-radius:999px; box-shadow:0 8px 40px rgba(0,0,0,.45)}
+  .layer{
+    position:absolute; left:50%; transform:translateX(-50%); width:100%; border-radius:18px; box-shadow:inset 0 -10px 0 rgba(0,0,0,.06);
+  }
+  .layer.top{top:0; height:70px; background:linear-gradient(#ffb3c6,#ff8dc0)}
+  .layer.mid{top:62px; height:78px; background:linear-gradient(#ffd3a6,#ffb86b)}
+  .layer.bot{top:130px; height:90px; background:linear-gradient(#b6f0ff,#7de3ff)}
+  .drip{position:absolute; width:18px; height:34px; background:rgba(255,255,255,.85); border-radius:9px; box-shadow:0 0 8px rgba(255,255,255,.5)}
+  .drip.d1{left:18% ; top:52px}
+  .drip.d2{left:44% ; top:54px; height:42px}
+  .drip.d3{left:70% ; top:50px}
+  /* candles */
+  .candles{position:absolute; top:-26px; left:50%; transform:translateX(-50%); display:flex; gap:16px}
+  .candle{width:14px; height:36px; background:#fff; border-radius:4px; position:relative; box-shadow:0 4px 0 rgba(0,0,0,.15) inset}
+  .candle:before{
+    content: "";
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 16px;
+    background: radial-gradient(ellipse at center, #fff6a3 20%, #ffb703 60%, transparent 70%);
+    border-radius: 50% 50% 45% 45%;
+    filter: blur(1px);
+    animation: flicker .18s infinite;
+  }
+  @keyframes flicker{ 50%{ transform:translateX(-50%) scale(1.06) } }
+
+  /* knife */
+  .knife{position:absolute; right:-60px; top:40px; width:160px; height:16px; transform:rotate(18deg); transform-origin:right center; display:none}
+  .blade{position:absolute; right:0; width:120px; height:16px; background:linear-gradient(90deg,#e3e7ea,#b1bcc6); border-radius:4px 0 0 4px; box-shadow:inset -3px 0 6px rgba(0,0,0,.2)}
+  .handle{position:absolute; left:0; width:48px; height:16px; background:#4a2c2c; border-radius:4px; box-shadow: inset 0 0 6px rgba(0,0,0,.35)}
+  .slash{position:absolute; inset:0; background: radial-gradient(120px 22px at 60% 45%, rgba(255,255,255,.65), transparent 70%); opacity:0; pointer-events:none}
+
+  /* slice */
+  .slice{
+    position:absolute; left:50%; top:140px; transform:translateX(-50%); width:180px; height:74px; background:linear-gradient(#ffd7e6,#ffaad2);
+    border-radius:10px; display:none; box-shadow:0 10px 20px rgba(0,0,0,.35)
+  }
+
+  .fadeIn{animation: fadeIn .6s ease forwards}
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+  
+  /* surprise row: left text/button, small photo on the right (stacks on small screens) */
+  #afterCount .surpriseRow{ display:flex; align-items:center; gap:16px; justify-content:center; margin-top:6px }
+  #afterCount .surpriseText{ text-align:left; max-width:460px }
+  #surprisePhoto{ display:none; width:120px; max-width:28vw; border-radius:12px; box-shadow:0 12px 40px rgba(0,0,0,.5) }
+  @media(max-width:640px){
+    #afterCount .surpriseRow{ flex-direction:column-reverse; align-items:center }
+    #afterCount .surpriseText{ text-align:center }
+  }
+
+  /* Mobile-phone style: center a narrow "phone" card and adjust typography/alignment */
+  @media (max-width:420px){
+    body{ background-size:cover; }
+    section{
+      width:360px;
+      height: calc(100vh - 24px);
+      margin:12px auto;
+      padding:18px;
+      border-radius:22px;
+      box-shadow: 0 30px 60px rgba(2,6,20,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      align-items:flex-start;
+      text-align:left;
+      backdrop-filter: blur(6px);
+    }
+    .show{display:flex}
+    /* reduce large headings to fit neatly on phone */
+    .big{ font-size: clamp(20px, 6vw, 36px) }
+    .xl{ font-size: clamp(28px, 8vw, 48px) }
+    #countNum{ font-size: clamp(56px, 18vw, 100px) ; text-align:left }
+    /* surprise row: keep photo small and to the right on wider phones, fall back to stacked */
+    #afterCount .surpriseRow{ flex-direction:row; justify-content:space-between; align-items:center; gap:12px; width:100% }
+    #afterCount .surpriseText{ text-align:left; max-width:220px }
+    /* don't force-display the photo on small screens; JS will show it on click */
+    #surprisePhoto{ width:92px; height:auto; object-fit:cover; border-radius:12px }
+    /* cake stage scale down */
+    .stage{ transform: scale(.92); transform-origin:top center }
+    .pager{ justify-content:flex-start; gap:10px }
+    .btn{ padding:12px 20px; font-size:16px }
+  }
+</style>
+</head>
+<body>
+
+<!-- ⭐ Tiny stars -->
+<div class="stars" id="stars"></div>
+
+<!-- 🔥 Fireworks / Confetti canvas -->
+<canvas class="fx" id="fxCanvas"></canvas>
+
+<!-- 1) COUNTDOWN -->
+<section id="sec-count" class="show">
+  <div class="fadeIn">
+    <div class="muted">Get ready…</div>
+    <div id="countNum">1</div>
+    <div id="afterCount" style="display:none" class="fadeIn">
+      <div class="surpriseRow">
+        <div class="surpriseText">
+          <h1 class="big">Idhaa Touchh pannuuu</h1>
+          <button class="btn" id="surpriseBtn">🎉 Surprise</button>
+        </div>
+        <img id="surprisePhoto" src="swetha.jpg" alt="Swetha" class="photo fadeIn" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2) NOTE + FIREWORKS -->
+<section id="sec-note">
+  <h1 class="xl">HAPPY BIRTHDAYYY SWETHAAA 🎉🎂</h1>
+  <div class="note fadeIn">
+    <p class="big">Oii Happppyyyyy Birthdayyy Madammmm 🥳</p>
+    <p>Eppaumm happy ah iruu 😃</p>
+    <p>Nallaaaa sirichitaeee iruu 😁</p>
+    <p>Life fullahh eppavum nallathu than nadakum 💫</p>
+    <p>Stay blesseddd 🙏</p>
+    <p>Ice cream vangii tharataaa?? 🍦 pleaseee 😜</p>
+    <p>Todayy is not ur dayy, every single day is ur dayyyyy ❤️</p>
+  </div>
+  <div class="pager">
+    <button class="btn" id="toCake">Next ➜ Cut the Cake</button>
+  </div>
+</section>
+
+<!-- 3) (removed) music section - flow goes: countdown → note → cake → final -->
+
+<!-- 4) CAKE CUTTING -->
+<section id="sec-cake">
+  <h1 class="xl">Selavuu panatha nu soltaa atlest epdiyachu cake cut pannuu, Panlamaaa 🎂</h1>
+  <div class="stage">
+    <div class="cake" id="cake">
+      <div class="layer top">
+        <span class="drip d1"></span><span class="drip d2"></span><span class="drip d3"></span>
+        <div class="candles">
+          <div class="candle"></div>
+          <div class="candle"></div>
+          <div class="candle"></div>
+          <div class="candle"></div>
+          <div class="candle"></div>
+        </div>
+      </div>
+      <div class="layer mid"></div>
+      <div class="layer bot"></div>
+      <div class="plate"></div>
+      <div class="slice" id="slice"></div>
+      <div class="knife" id="knife">
+        <div class="handle"></div><div class="blade"></div>
+      </div>
+      <div class="slash" id="slash"></div>
+    </div>
+  </div>
+  <div class="pager">
+    <button class="btn" id="cutBtn">🔪 Cut the Cake</button>
+    <button class="btn" id="toPhoto">Next ➜ Final Wish</button>
+  </div>
+</section>
+
+<!-- 5) PHOTO + FINAL WISH -->
+<section id="sec-photo">
+  <h2 class="big">Ellannn Seriagidum 😍</h2>
+  <h1 class="xl">Happyy Birthdayyy Swethaaa Ma!! 🎉🎂</h1>
+   <h2 class="muted">black venna Yellowww</h2>
+   <div class="pager">
+     <button class="btn" id="replay">↻ Replay</button>
+   </div>
+   <div class="footerPad"></div>
+ </section>
+
+<!-- audio kept globally so it starts when Surprise is clicked -->
+<audio id="bdayMusic" src="remo.mp3" preload="auto" crossorigin="anonymous" style="display:none"></audio>
+
+<script>
+/* ====== tiny stars ====== */
+(function makeStars(){
+  const stars = document.getElementById('stars');
+  const N = 90;
+  for(let i=0;i<N;i++){
+    const s=document.createElement('span');
+    const x=Math.random()*100, y=Math.random()*100, d=4+Math.random()*8;
+    s.style.left=x+'%'; s.style.top=y+'%'; s.style.animationDuration = (3+Math.random()*4)+'s';
+    s.style.width = s.style.height = (Math.random()<.5?1:2)+'px';
+    stars.appendChild(s);
+  }
+})();
+
+/* ====== helpers ====== */
+const $ = sel => document.querySelector(sel);
+const show = id => {
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+  if(id==='sec-note'){ startFireworks(); } else { stopFireworks(); }
+};
+const fxCanvas = $('#fxCanvas');
+const fctx = fxCanvas.getContext('2d');
+function sizeCanvas(){ fxCanvas.width = innerWidth; fxCanvas.height = innerHeight }
+addEventListener('resize', sizeCanvas); sizeCanvas();
+
+/* ====== countdown 1..5 -> surprise ====== */
+(function countdown(){
+  const num = $('#countNum'); const after = $('#afterCount');
+  let c = 1;
+  const t = setInterval(()=>{
+    c++;
+    if(c<=5){ num.textContent = c; }
+    else { clearInterval(t); num.style.display='none'; after.style.display='block'; }
+  }, 900);
+})();
+
+/* ====== fireworks / confetti engine ====== */
+let particles = [];
+function rnd(a,b){ return Math.random()*(b-a)+a }
+function fireBurst(x,y,colorsN=5, count=64, speed=4.2){
+  const colors=['#ff4ecb','#ffd166','#40e0d0','#7df9ff','#f8f99a','#9d4edd','#4af2a1'];
+  for(let i=0;i<count;i++){
+    const ang=rnd(0,Math.PI*2), sp=rnd(speed*.4,speed);
+    // pick a color from the palette (wrap by array length)
+    const color = colors[i % colors.length];
+    particles.push({
+      x, y, vx: Math.cos(ang)*sp, vy: Math.sin(ang)*sp, life:1, r: rnd(1.6,2.6),
+      color
+    });
+  }
+}
+function confettiBurst(x,y,count=80){
+  for(let i=0;i<count;i++){
+    const ang=rnd(-Math.PI,0), sp=rnd(2.2,6.2);
+    particles.push({x,y, vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp-1, life:1, r:rnd(2,3), color:`hsl(${Math.floor(rnd(0,360))} 90% 60%)`});
+  }
+}
+function loop(){
+  fctx.clearRect(0,0,fxCanvas.width,fxCanvas.height);
+  particles.forEach((p,idx)=>{
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.02; p.life-=0.012;
+    if(p.life<=0){ particles.splice(idx,1); return; }
+    fctx.globalAlpha = Math.max(p.life,0);
+    fctx.fillStyle = p.color;
+    fctx.beginPath(); fctx.arc(p.x,p.y,p.r,0,Math.PI*2); fctx.fill();
+    fctx.globalAlpha = 1;
+  });
+  requestAnimationFrame(loop);
+}
+loop();
+
+let fireworksTimer = null;
+function startFireworks(duration){
+  if(fireworksTimer) clearInterval(fireworksTimer);
+  fireworksTimer = setInterval(()=>{
+    fireBurst(rnd(80, fxCanvas.width-80), rnd(80, fxCanvas.height-140));
+  }, 350);
+  if(duration && duration>0){
+    setTimeout(()=>{ clearInterval(fireworksTimer); fireworksTimer = null; }, duration);
+  }
+}
+function stopFireworks(){
+  if(fireworksTimer){ clearInterval(fireworksTimer); fireworksTimer = null; }
+}
+
+/* ====== section wiring ====== */
+$('#surpriseBtn').addEventListener('click', ()=>{
+  // reveal the photo right under the Surprise button, then proceed to the note
+  const photo = $('#surprisePhoto');
+  if(photo){
+    photo.style.display = 'block';
+    photo.classList.add('fadeIn');
+  }
+  // small pause so the photo is visible, then continue to the note + fireworks
+  setTimeout(()=>{
+    show('sec-note');
+    fireBurst(innerWidth*0.25, innerHeight*0.35);
+    fireBurst(innerWidth*0.75, innerHeight*0.38);
+    fireBurst(innerWidth*0.5,  innerHeight*0.25);
+    try { $('#bdayMusic').play(); } catch(e){}
+  }, 650);
+});
+
+$('#toCake').addEventListener('click', ()=> show('sec-cake'));
+$('#toPhoto').addEventListener('click', ()=> show('sec-photo'));
+$('#replay').addEventListener('click', ()=>{
+  try{ $('#bdayMusic').pause(); $('#bdayMusic').currentTime = 0 } catch(e){}
+  location.hash=''; // keep simple, restart flow
+  show('sec-count');
+  // hide the surprise photo when restarting
+  try{ const sp = $('#surprisePhoto'); if(sp) sp.style.display='none' } catch(e){}
+  // Reset countdown view
+  $('#countNum').textContent='1';
+  $('#countNum').style.display='block';
+  $('#afterCount').style.display='none';
+  // restart countdown
+  (function restart(){ let c=1; const num=$('#countNum'); const after=$('#afterCount');
+    const t=setInterval(()=>{ c++; if(c<=5){ num.textContent=c } else { clearInterval(t); num.style.display='none'; after.style.display='block' } },900);
+  })();
+});
+
+/* ====== cake cutting animation ====== */
+const cutBtn = $('#cutBtn');
+const knife = $('#knife');
+const slash = $('#slash');
+const slice = $('#slice');
+
+let cutOnce=false;
+cutBtn.addEventListener('click', ()=>{
+  if(cutOnce) { confettiBurst(innerWidth/2, innerHeight/2, 100); return; }
+  cutOnce=true;
+  knife.style.display='block';
+  // knife swoop
+  knife.animate([
+    { transform: 'rotate(18deg) translateX(40px)' },
+    { transform: 'rotate(2deg) translateX(-220px)' }
+  ], { duration: 800, easing: 'cubic-bezier(.2,.9,.2,1)', fill: 'forwards' })
+  .finished.then(()=>{
+    // show slash flash
+    slash.style.opacity = '1';
+    slash.animate([{ opacity:1 }, { opacity:0 }], { duration: 420, easing: 'ease-out' });
+    // reveal slice and confetti
+    slice.style.display = 'block';
+    slice.animate([
+      { transform: 'translateY(-10px) scale(0.98)', opacity: 0 },
+      { transform: 'translateY(0) scale(1)', opacity: 1 }
+    ], { duration: 420, easing: 'cubic-bezier(.2,.9,.2,1)', fill: 'forwards' });
+    confettiBurst(innerWidth/2, innerHeight/2, 120);
+    // hide knife after short delay
+    setTimeout(()=>{ knife.style.display='none'; }, 700);
+  }).catch(()=>{ knife.style.display='none'; });
+});
+</script>
+</body>
+</html>
